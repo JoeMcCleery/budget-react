@@ -1,4 +1,4 @@
-import Element from "../framework/element.js";
+import Element from "./framework/element.js";
 import Card from "./components/card.js";
 import P from "./components/p.js";
 import Counter from "./components/counter.js";
