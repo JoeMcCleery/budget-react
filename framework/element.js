@@ -9,8 +9,8 @@ class Element {
     const { style, classList, children, onClick } = this.props;
 
     const element = document.createElement(tag);
-    element.style = style;
-    element.classList = classList;
+    if (style) element.style = style;
+    if (classList) element.classList = classList;
     if (onClick) element.addEventListener("click", (e) => onClick(e));
 
     children?.forEach((e) => {
