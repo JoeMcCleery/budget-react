@@ -1,7 +1,7 @@
 import Element from "../framework/element.js";
 
-function P({ text = "" }) {
-  return Element({ tag: "p", children: text });
+function P({ text }) {
+  return new Element("p", { children: [text] });
 }
 
 export default P;

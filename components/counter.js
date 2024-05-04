@@ -7,7 +7,7 @@ function Counter() {
   return Button({
     style:
       "color: white; padding: 1rem; background-color: darkslategrey; border: none; border-radius: 1rem; cursor: pointer;",
-    children: `Click me! ${count}`,
+    children: [`Click me! ${count}`],
     onClick: () => setCount(count + 1),
   });
 }

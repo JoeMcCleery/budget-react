@@ -1,19 +1,21 @@
-function BudgetReact(mount, root) {
-  this.mount = mount;
-  this.root = root;
-  this.statePointer = 0;
+class BudgetReact {
+  constructor(mount, root) {
+    this.mount = mount;
+    this.root = root;
+    this.statePointer = 0;
 
-  this.render = () => {
-    this.mount.append(this.root());
+    window.budgetReact = this;
+  }
+
+  render = () => {
+    const dom = this.root();
+    this.mount.replaceChildren(dom.render());
   };
 
-  this.reRender = () => {
-    this.mount.innerHTML = "";
+  reRender = () => {
     this.statePointer = 0;
     this.render();
   };
-
-  window.budgetReact = this;
 }
 
 export default BudgetReact;
