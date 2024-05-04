@@ -2,4 +2,4 @@ import App from "./app.js";
 import BudgetReact from "./framework/budgetReact.js";
 
 // Let's goooo
-new BudgetReact(App).render();
+new BudgetReact(document.getElementById("app"), App).render();

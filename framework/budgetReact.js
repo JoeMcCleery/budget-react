@@ -1,6 +1,6 @@
-function BudgetReact(rootComponent) {
-  this.mount = document.getElementById("app");
-  this.root = rootComponent;
+function BudgetReact(mount, root) {
+  this.mount = mount;
+  this.root = root;
   this.statePointer = 0;
 
   this.render = () => {
