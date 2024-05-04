@@ -4,7 +4,7 @@ class Element {
     this.props = props || {};
   }
 
-  render = () => {
+  render() {
     const tag = this.tag;
     const { style, classList, children, onClick } = this.props;
 
@@ -18,7 +18,7 @@ class Element {
     });
 
     return element;
-  };
+  }
 }
 
 export default Element;

@@ -7,15 +7,15 @@ class BudgetReact {
     window.budgetReact = this;
   }
 
-  render = () => {
+  render() {
     const dom = this.root();
     this.mount.replaceChildren(dom.render());
-  };
+  }
 
-  reRender = () => {
+  reRender() {
     this.statePointer = 0;
     this.render();
-  };
+  }
 }
 
 export default BudgetReact;
