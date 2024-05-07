@@ -7,14 +7,37 @@ class BudgetReact {
     window.budgetReact = this;
   }
 
-  render() {
-    const dom = this.root();
-    this.mount.replaceChildren(dom.render());
+  init() {
+    this.render(this.root(), this.mount);
+  }
+
+  render(el, container) {
+    if (typeof el !== "object") {
+      container.appendChild(document.createTextNode(el));
+      return;
+    }
+
+    // Create document element
+    const domEl = document.createElement(el.tagName);
+
+    // Handle attributes
+    if (el.attributes) {
+      for (let [attribute, value] of Object.entries(el.attributes)) {
+        domEl[attribute] = value;
+      }
+    }
+
+    // Render children
+    el.children?.forEach((childEl) => this.render(childEl, domEl));
+
+    // Append to container
+    container.appendChild(domEl);
   }
 
   reRender() {
     this.statePointer = 0;
-    this.render();
+    this.mount.innerHTML = "";
+    this.render(this.root(), this.mount);
   }
 }
 
