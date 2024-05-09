@@ -24,7 +24,7 @@ export class BudgetElement {
 }
 
 function isKeyType(key: PropType): key is KeyType {
-  return <KeyType>key !== undefined;
+  return typeof key === "string" || typeof key === "number";
 }
 
 export function createElement(
