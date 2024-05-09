@@ -12,7 +12,7 @@ All important files in ./framework folder
 // ./app.js
 import BudgetElement from "./framework/budgetElement.js";
 
-// Entry point for your app, do whatever you want but must return an Element or string.
+// Entry point for your app, do whatever you want but must return a BudgetElement or string.
 function App() {
   return new BudgetElement("h1", { style: "font-size: 5rem;" }, [
     "Hello World",
