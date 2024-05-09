@@ -1,0 +1,18 @@
+{
+  "name": "budget-react",
+  "version": "1.0.0",
+  "description": "A bad react clone",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/JoeMcCleery/budget-react.git",
+  "author": "JoeMcCleery <mccleery.joseph@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "yarn build"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
