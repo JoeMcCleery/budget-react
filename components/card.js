@@ -1,7 +1,7 @@
-import Element from "../framework/element.js";
+import BudgetElement from "../framework/budgetElement.js";
 
 function Card({ title = "" } = {}, attributes, children = []) {
-  return new Element(
+  return new BudgetElement(
     null,
     {
       ...attributes,
@@ -10,7 +10,7 @@ function Card({ title = "" } = {}, attributes, children = []) {
         attributes?.style,
       ].join(""),
     },
-    [new Element("h1", null, [title]), ...children]
+    [new BudgetElement("h1", null, [title]), ...children]
   );
 }
 

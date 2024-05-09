@@ -1,5 +1,5 @@
-import App from "./app.js";
 import BudgetReact from "./framework/budgetReact.js";
+import App from "./app.js";
 
 // Let's goooo
-new BudgetReact(document.getElementById("app"), App).init();
+new BudgetReact().render(App(), document.getElementById("app"));

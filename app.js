@@ -1,10 +1,9 @@
-import Element from "./framework/element.js";
+import BudgetElement from "./framework/budgetElement.js";
 import Card from "./components/card.js";
 import Counter from "./components/counter.js";
-import SomeComponent from "./stateExample.js";
 
 function App() {
-  return new Element(
+  return new BudgetElement(
     null,
     {
       style: "display: flex; flex-direction: column; gap: 8px;",
@@ -13,15 +12,17 @@ function App() {
       new Card(
         { title: "Budget React" },
         { style: "background-color: darkslategrey;" },
-        [new Element("p", null, ["Hello World"])]
+        [new BudgetElement("p", null, ["Hello World"])]
       ),
-      Card({ title: "DevX" }, null, [new Element("p", null, ["So good lol"])]),
+      Card({ title: "DevX" }, null, [
+        new BudgetElement("p", null, ["So good lol"]),
+      ]),
       Card(
         {
           title: "Performance",
         },
         null,
-        [new Element("p", null, ["Blazingly fast! 😅"])]
+        [new BudgetElement("p", null, ["Blazingly fast! 😅"])]
       ),
       Card(
         {
@@ -29,8 +30,8 @@ function App() {
         },
         null,
         [
-          new Element("p", null, ["Very cool"]),
-          new Element(
+          new BudgetElement("p", null, ["Very cool"]),
+          new BudgetElement(
             null,
             {
               style:

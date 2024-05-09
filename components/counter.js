@@ -1,10 +1,10 @@
 import useState from "../framework/useState.js";
-import Element from "../framework/element.js";
+import BudgetElement from "../framework/budgetElement.js";
 
 function Counter({ increment = 1 } = {}, attributes, children = []) {
   const [count, setCount] = useState(0);
 
-  return new Element(
+  return new BudgetElement(
     "button",
     {
       ...attributes,
@@ -14,7 +14,7 @@ function Counter({ increment = 1 } = {}, attributes, children = []) {
       ].join(""),
       onclick: () => setCount(count + increment),
     },
-    ["Click me! ", count, ...children]
+    [`Click me! ${count}`, ...children]
   );
 }
 

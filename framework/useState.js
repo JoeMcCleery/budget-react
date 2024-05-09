@@ -5,7 +5,7 @@ function useState(initialState) {
   appState[pointer] = appState[pointer] || initialState;
   const setState = (newState) => {
     appState[pointer] = newState;
-    window.budgetReact.reRender();
+    // TODO rerender
   };
   return [appState[pointer], setState];
 }
