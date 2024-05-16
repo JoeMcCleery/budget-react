@@ -16,4 +16,4 @@ yarn add budget-react
 
 You don't want to...
 
-But if you really must see this [template repo](https://github.com/JoeMcCleery/budget-react-template)
+But if you really must, see this [template repo](https://github.com/JoeMcCleery/budget-react-template)
