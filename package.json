@@ -2,17 +2,34 @@
   "name": "budget-react",
   "version": "1.0.0",
   "description": "A bad react clone",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./jsx-runtime": {
+      "default": "./jsx-runtime/index.js",
+      "types": "./jsx-runtime/index.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "default": "./jsx-dev-runtime/index.js",
+      "types": "./jsx-dev-runtime/index.d.ts"
+    }
+  },
   "repository": "https://github.com/JoeMcCleery/budget-react.git",
   "author": "JoeMcCleery <mccleery.joseph@gmail.com>",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "prepublish": "yarn build"
+    "clean": "shx rm -rf ./dist",
+    "build": "yarn clean && tsc && yarn copypackage",
+    "copypackage": "shx cp -rf package.json dist",
+    "dist": "cd dist && yarn publish"
   },
   "devDependencies": {
+    "shx": "^0.3.4",
     "typescript": "^5.4.5"
   }
 }

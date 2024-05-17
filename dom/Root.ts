@@ -1,11 +1,9 @@
-import { Fragment } from "../jsx-runtime";
-import { Budget } from "./Element";
+import type { Node, DomContainer } from "budget-react";
+import { BudgetFragment } from "budget-react";
 
 export function createRoot(container: HTMLElement): Root {
   return new Root(container);
 }
-
-export type DomContainer = HTMLElement | DocumentFragment;
 
 const customAttributes = ["children", "key", "props"];
 
@@ -17,9 +15,7 @@ class Root {
     this.container = container;
   }
 
-  render(node: Budget.Node, container?: DomContainer) {
-    if (!node) return;
-
+  render(node: Node, container?: DomContainer) {
     // Get container
     container = container || this.container;
 
@@ -30,29 +26,28 @@ class Root {
       return;
     }
 
-    // Create element
+    // Create element/fragment
     const element =
-      node.type === Fragment
+      node.type === BudgetFragment
         ? document.createDocumentFragment()
         : document.createElement(node.type as string);
 
     // Set element attributes
-    if (node.type !== Fragment) {
-      const props = node.props;
-      const propKeys = Object.keys(props);
-      propKeys.filter(isStandardAttribute).forEach((name) => {
+    const props = node.props;
+    Object.keys(props)
+      .filter(isStandardAttribute)
+      .forEach((name) => {
         // @ts-ignore
-        element[name.toLowerCase()] = props[name];
+        element[name] = props[name];
       });
-    }
 
     // Create children
-    if (Array.isArray(node.props.children)) {
-      node.props.children.forEach((child: Budget.Node) =>
-        this.render(child, element)
-      );
-    } else if (node.props.children) {
-      this.render(node.props.children, element);
+    if (node.props.children) {
+      if (Array.isArray(node.props.children)) {
+        node.props.children.forEach((node) => this.render(node, element));
+      } else {
+        this.render(node.props.children, element);
+      }
     }
 
     // Append to container
