@@ -1,7 +1,12 @@
 {
   "name": "budget-react",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A bad react clone",
+  "keywords": [
+    "react",
+    "react-dom",
+    "typescript"
+  ],
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
@@ -26,7 +31,7 @@
     "clean": "shx rm -rf ./dist",
     "build": "yarn clean && tsc && yarn copypackage",
     "copypackage": "shx cp -rf package.json README.md dist",
-    "dist": "cd dist && yarn publish"
+    "dist": "yarn build && cd dist && yarn publish"
   },
   "devDependencies": {
     "shx": "^0.3.4",
