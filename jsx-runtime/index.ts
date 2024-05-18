@@ -2,15 +2,8 @@ import type { Key, Props, Type } from "budget-react";
 import { BudgetFragment, createElement } from "budget-react";
 
 export function jsx(type: Type, props: Props, key?: Key) {
-  switch (typeof type) {
-    case "function":
-      // Function component
-      return type(props);
-    default:
-      // Jsx
-      props.key = key;
-      return createElement(type, props);
-  }
+  props.key = key;
+  return createElement(type, props);
 }
 
 export const Fragment = BudgetFragment;

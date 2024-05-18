@@ -1,4 +1,10 @@
-import type { BudgetElement, Config, Key, Type } from "budget-react";
+import type {
+  BudgetElement,
+  Config,
+  Key,
+  Type,
+  BudgetNode,
+} from "budget-react";
 
 export const BudgetFragment = "Budget.Fragment";
 export const BudgetTextNode = "Budget.TextNode";
@@ -12,4 +18,8 @@ export function createElement(type: Type, props: Config): BudgetElement {
 
   // Return new element
   return { type, props, key };
+}
+
+export function getNodeType(node: BudgetNode): Type {
+  return typeof node === "object" ? node.type : BudgetTextNode;
 }
