@@ -4,7 +4,6 @@ import type {
   Key,
   Type,
   BudgetNode,
-  Props,
 } from "budget-react";
 
 export const BudgetFragment = "Budget.Fragment";
@@ -23,11 +22,4 @@ export function createElement(type: Type, props: Config): BudgetElement {
 
 export function getNodeType(node: BudgetNode): Type {
   return typeof node === "object" ? node.type : BudgetTextNode;
-}
-
-export function createFragment(props: Props): BudgetElement {
-  return {
-    type: BudgetFragment,
-    props,
-  };
 }
