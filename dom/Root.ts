@@ -1,4 +1,4 @@
-import type { BudgetNode, DomContainer, Fiber } from "budget-react";
+import type { BudgetNode, Fiber } from "budget-react";
 import { renderLoop } from "budget-react";
 
 export function createRoot(container: HTMLElement): Root {
@@ -6,8 +6,8 @@ export function createRoot(container: HTMLElement): Root {
 }
 
 class Root {
-  container: DomContainer;
-  constructor(container: DomContainer) {
+  container: Node;
+  constructor(container: Node) {
     this.container = container;
   }
 

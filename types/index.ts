@@ -1,7 +1,4 @@
-import { EffectTag, Fragment } from "budget-react";
-
-export type DomContainer = HTMLElement | Fragment;
-export type FiberDom = DomContainer | Text;
+import { EffectTag } from "budget-react";
 
 export type Type = string | FunctionComponent;
 export type Key = string | number | bigint;
@@ -25,7 +22,7 @@ export interface Fiber {
   type?: Type;
   props: Props;
   key?: Key;
-  dom?: FiberDom;
+  dom?: Node;
   parent?: Fiber;
   child?: Fiber;
   sibling?: Fiber;

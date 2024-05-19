@@ -1,8 +1,8 @@
-import type { Fiber, FiberDom, BudgetNode, Props } from "budget-react";
+import type { Fiber, BudgetNode, Props } from "budget-react";
 import {
   BudgetFragment,
   BudgetTextNode,
-  Fragment,
+  createFragment,
   getNodeType,
 } from "budget-react";
 
@@ -10,6 +10,7 @@ export enum EffectTag {
   UPDATE = "Update",
   PUT = "PUT",
   DELETE = "DELETE",
+  REPLACE = "REPLACE",
 }
 
 const customAttributes = ["children", "key", "props"];
@@ -75,13 +76,27 @@ function commitWork(fiber?: Fiber) {
     updateDom(fiber.dom!, fiber.alternate!.props, fiber.props);
   } else if (fiber.effect === EffectTag.DELETE) {
     commitDeletion(fiber, domParent);
+  } else if (fiber.effect === EffectTag.REPLACE && fiber.alternate) {
+    commitReplacement(fiber, fiber.alternate, domParent);
   }
 
   commitWork(fiber.child);
   commitWork(fiber.sibling);
 }
 
-function commitDeletion(fiber: Fiber, domParent: FiberDom) {
+function commitReplacement(fiber: Fiber, alternate: Fiber, domParent: Node) {
+  if (fiber.dom && alternate.dom) {
+    domParent.replaceChild(fiber.dom, alternate.dom);
+  } else {
+    commitReplacement(
+      fiber.dom ? fiber : fiber.child!,
+      alternate.dom ? alternate : alternate.child!,
+      domParent
+    );
+  }
+}
+
+function commitDeletion(fiber: Fiber, domParent: Node) {
   if (fiber.dom) {
     domParent.removeChild(fiber.dom);
   } else {
@@ -93,7 +108,11 @@ function performUnitOfWork(fiber: Fiber) {
   if (typeof fiber.type === "function") {
     updateFunctionComponent(fiber);
   } else {
-    updateHostComponent(fiber);
+    if (fiber.type == BudgetFragment) {
+      reconcileChildren(fiber);
+    } else {
+      updateHostComponent(fiber);
+    }
   }
 
   // Return next unit of work
@@ -165,15 +184,26 @@ function reconcileChildren(fiber: Fiber) {
       };
     } else {
       if (child) {
-        // Add fiber
-        newFiber = {
-          type: childType,
-          props: childProps,
-          parent: fiber,
-          effect: EffectTag.PUT,
-        };
-      }
-      if (alternate) {
+        if (alternate) {
+          // Replace fiber
+          newFiber = {
+            type: childType,
+            props: childProps,
+            parent: fiber,
+            effect: EffectTag.REPLACE,
+            alternate,
+          };
+          alternate.child = undefined;
+        } else {
+          // Add fiber
+          newFiber = {
+            type: childType,
+            props: childProps,
+            parent: fiber,
+            effect: EffectTag.PUT,
+          };
+        }
+      } else if (alternate) {
         // Delete old fiber
         alternate.effect = EffectTag.DELETE;
         deletions.push(alternate);
@@ -196,7 +226,7 @@ function reconcileChildren(fiber: Fiber) {
   }
 }
 
-function updateDom(dom: FiberDom, prevProps: Props, nextProps: Props) {
+function updateDom(dom: Node, prevProps: Props, nextProps: Props) {
   // Remove old attributes
   Object.keys(prevProps)
     .filter(isStandardAttribute)
@@ -215,17 +245,14 @@ function updateDom(dom: FiberDom, prevProps: Props, nextProps: Props) {
     });
 }
 
-function createDom(fiber: Fiber): FiberDom {
+function createDom(fiber: Fiber): Node {
   // Create text element
   if (fiber.type === BudgetTextNode) {
     return document.createTextNode(fiber.props.textContent || "");
   }
 
   // Create element/fragment
-  const dom =
-    fiber.type === BudgetFragment
-      ? new Fragment()
-      : document.createElement((fiber.type as string) || "");
+  const dom = document.createElement((fiber.type as string) || "");
 
   // Set element attributes
   const props = fiber.props;
@@ -243,10 +270,10 @@ export function createFiber(
   node: BudgetNode,
   parent: Fiber,
   alternate?: Fiber
-) {
+): Fiber {
   return typeof node === "object"
     ? {
-        type: node.type as string,
+        type: node.type,
         props: node.props,
         parent,
         alternate,
