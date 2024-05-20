@@ -15,43 +15,65 @@ const isNew = (prev: Props, next: Props) => (key: string) =>
   prev[key] !== next[key];
 const isGone = (next: Props) => (key: string) => !(key in next);
 
-let currentRoot: Fiber;
+let wipRoot: Fiber | undefined;
+let currentRoot: Fiber | undefined;
+
 export let wipFiber: Fiber;
 
 const deletions: Fiber[] = [];
 
-export function renderLoop(rootFiber?: Fiber) {
-  // Get root fiber
-  rootFiber = rootFiber || {
-    dom: currentRoot.dom,
-    props: currentRoot.props,
+let nextUnitOfWork: Fiber | undefined;
+
+export function render(container: Node, node: BudgetNode) {
+  // Create root fiber
+  wipRoot = {
+    dom: container,
+    props: { children: node },
+    alternate: currentRoot,
   };
 
   // Clear deletions
   deletions.length = 0;
 
-  // Set alternate
-  rootFiber.alternate = currentRoot;
-
-  // Generate fiber tree
-  let nextUnitOfWork: Fiber | undefined = rootFiber;
-  while (nextUnitOfWork) {
-    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
-  }
-
-  // Commit work
-  commitRoot(rootFiber);
+  // Set next unit of work
+  nextUnitOfWork = wipRoot;
 }
 
-function commitRoot(rootFiber: Fiber) {
+export function rerender() {
+  render(currentRoot!.dom!, currentRoot!.props.children as BudgetNode);
+}
+
+// Start work loop
+requestIdleCallback(workLoop);
+function workLoop(deadline: IdleDeadline) {
+  let shouldYield = false;
+
+  while (nextUnitOfWork && !shouldYield) {
+    // Perform work and get next unit of work
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    // Bail if taking too long
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+
+  // If work completed commit to dom
+  if (!nextUnitOfWork && wipRoot) {
+    commitRoot();
+  }
+
+  // Continue work loop during next idle
+  requestIdleCallback(workLoop);
+}
+
+function commitRoot() {
   // Commit deletions
   deletions.forEach((fiber) => commitWork(fiber));
 
   // Append dom elements to container
-  commitWork(rootFiber.child);
+  commitWork(wipRoot!.child);
 
   // Set current root
-  currentRoot = rootFiber;
+  currentRoot = wipRoot;
+  wipRoot = undefined;
 }
 
 function commitWork(fiber?: Fiber) {
@@ -164,7 +186,7 @@ function reconcileChildren(fiber: Fiber) {
     const childProps: Props =
       typeof child === "object"
         ? child.props
-        : { textContent: child.toString() };
+        : (child && { textContent: child.toString() }) || {};
     const sameType = alternate && child && childType === alternate.type;
 
     if (sameType && alternate) {
@@ -178,7 +200,7 @@ function reconcileChildren(fiber: Fiber) {
         effect: EffectTag.UPDATE,
       };
     } else {
-      if (child) {
+      if (child !== undefined) {
         if (alternate) {
           // Replace fiber
           newFiber = {
@@ -247,7 +269,7 @@ function createDom(fiber: Fiber): Node {
   }
 
   // Create element/fragment
-  const dom = document.createElement((fiber.type as string) || "");
+  const dom = document.createElement(fiber.type as string);
 
   // Set element attributes
   const props = fiber.props;
@@ -259,26 +281,4 @@ function createDom(fiber: Fiber): Node {
     });
 
   return dom;
-}
-
-export function createFiber(
-  node: BudgetNode,
-  parent: Fiber,
-  alternate?: Fiber
-): Fiber {
-  return typeof node === "object"
-    ? {
-        type: node.type,
-        props: node.props,
-        parent,
-        alternate,
-      }
-    : {
-        type: BudgetTextNode,
-        props: {
-          textContent: node.toString(),
-        },
-        parent,
-        alternate,
-      };
 }
